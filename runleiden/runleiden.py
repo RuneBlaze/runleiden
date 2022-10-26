@@ -14,18 +14,13 @@ def main(
     output: str = typer.Option(..., "--output", "-o"),
 ):
     g = Graph.Load(input, format='edgelist', directed=False)
-    print(g.summary())
     parter = la.CPMVertexPartition if quality == Quality.cpm else la.ModularityVertexPartition
     partition = la.find_partition(
         g, parter, resolution_parameter=resolution
     )
-    print(len(partition))
-    return
     with open(output, "w+") as fh:
-        for i in range(len(partition)):
-            nodes = partition[i]
-            for n in nodes:
-                fh.write(f"{n} {i}\n")
+        for n, cid in partition.membership:
+            fh.write(f"{n} {cid}\n")
 
 def entry_point():
     typer.run(main)
