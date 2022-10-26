@@ -2,6 +2,7 @@ import typer
 import leidenalg as la
 from igraph import Graph
 from enum import Enum
+from structlog import get_logger
 
 class Quality(str, Enum):
     cpm = "cpm"
@@ -13,14 +14,19 @@ def main(
     resolution: float = typer.Option(1.0, "--gamma", "-r"),
     output: str = typer.Option(..., "--output", "-o"),
 ):
+    """Run Leiden algorithm on an input edgelist file."""
+    logger = get_logger()
     g = Graph.Load(input, format='edgelist', directed=False)
+    logger.info("loaded graph", n=g.vcount(), m=g.ecount())
     parter = la.CPMVertexPartition if quality == Quality.cpm else la.ModularityVertexPartition
     partition = la.find_partition(
         g, parter, resolution_parameter=resolution
     )
+    logger.info("clustering finished, writing to file")
     with open(output, "w+") as fh:
-        for n, cid in partition.membership:
-            fh.write(f"{n} {cid}\n")
+        for n, cid in enumerate(partition.membership):
+            fh.write(f"{n}\t{cid}\n")
+    logger.info("wrote output", output=output, n_clusters=cid+1)
 
 def entry_point():
     typer.run(main)
