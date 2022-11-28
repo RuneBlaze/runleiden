@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "runleiden"
-version = "0.1.0"
-description = ""
+version = "0.0.5"
+description = "Wrapper over leidenalg"
 authors = ["Your Name <you@example.com>"]
 readme = "README.md"
 

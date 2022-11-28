@@ -18,10 +18,17 @@ def main(
     logger = get_logger()
     g = Graph.Load(input, format='edgelist', directed=False)
     logger.info("loaded graph", n=g.vcount(), m=g.ecount())
-    parter = la.CPMVertexPartition if quality == Quality.cpm else la.ModularityVertexPartition
-    partition = la.find_partition(
-        g, parter, resolution_parameter=resolution
-    )
+    if resolution != 1.0 and quality == Quality.modularity:
+        logger.warn("resolution parameter is ignored for modularity")
+    if quality == Quality.cpm:
+        partition = la.find_partition(
+            g, la.CPMVertexPartition, resolution_parameter=resolution
+        )
+    else:
+        partition = la.find_partition(
+            g, la.ModularityVertexPartition
+        )
+    
     logger.info("clustering finished, writing to file")
     with open(output, "w+") as fh:
         for n, cid in enumerate(partition.membership):
