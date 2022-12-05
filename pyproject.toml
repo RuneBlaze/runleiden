@@ -2,11 +2,11 @@
 name = "runleiden"
 version = "0.0.5"
 description = "Wrapper over leidenalg"
-authors = ["Your Name <you@example.com>"]
+authors = ["runeblaze <runeblaze@excite.co.jp>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = "^3.7"
 leidenalg = "^0.9.0"
 typer = "^0.6.1"
 structlog = "^22.1.0"
